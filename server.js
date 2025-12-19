@@ -4,12 +4,15 @@ import mongoose from "mongoose";
 import dotenv from "dotenv";
 import errorHandler from "./middleware/errorHandler.js";
 import taskRouter from "./routes/taskRouter.js";
+import connectDB from "./connect/db.js";
 dotenv.config();
 
+connectDB();
 const app = express();
 
+
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.urlencoded({ extended: false }));
 app.use(cors());
 app.use(errorHandler);
 
