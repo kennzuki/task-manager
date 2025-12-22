@@ -4,8 +4,8 @@ import{ registerUser, loginUser, getCurrentUser } from '../controller/userContro
 const router = express.Router();
 
 router.post('/', registerUser);
-router.get('/login', loginUser);
-router.post('/current', getCurrentUser);
+router.post('/login', loginUser);
+router.get('/current', getCurrentUser);
 
 
 export default router;

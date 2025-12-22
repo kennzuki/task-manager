@@ -13,7 +13,7 @@ const registerUser = asyncHandler(async (req, res) => {
   if (existingUser) {
     throw new Error('not valid');
   }
- 
+
   const salt = await bcrypt.genSalt(10);
   const hashedPassword = await bcrypt.hash(password, salt);
   const user = await User.create({
@@ -28,16 +28,37 @@ const registerUser = asyncHandler(async (req, res) => {
       name: user.name,
       email: user.email,
       password: user.password,
+      token: generateJWTtoken(user._id),
     });
   } else {
-    res.status(400); throw new Error({ message: 'unable to create user' });
+    res.status(400);
+    throw new Error({ message: 'unable to create user' });
   }
 });
+//login user
 const loginUser = asyncHandler(async (req, res) => {
-  res.json({ message: 'Login User successful' });
+  const { email, password } = req.body;
+  const user = await User.findOne({ email });
+  if (user && (await bcrypt.compare(password, user.password))) {
+    res.json({
+      _id: user.id,
+      name: user.name,
+      email: user.email,
+      token: generateJWTtoken(user._id),
+    });
+  } else {
+    res.status(400);
+    throw new Error('Invalid data');
+  }
 });
+
+//get user
 const getCurrentUser = asyncHandler(async (req, res) => {
   res.json({ message: 'Get Current User successful' });
 });
+
+const generateJWTtoken = (id) => {
+  jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: '5d' });
+};
 
 export { registerUser, loginUser, getCurrentUser };
