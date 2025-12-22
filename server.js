@@ -1,6 +1,5 @@
 import express from 'express';
 import cors from 'cors';
-import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import errorHandler from './middleware/errorHandler.js';
 import taskRouter from './routes/taskRouter.js';
