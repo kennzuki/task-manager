@@ -43,7 +43,7 @@ if (!task) {
 res.status(400)
 throw new Error('Task not found')
 }
- 
+
  const updatedTask = await Task.findByIdAndUpdate(req.params.id, req.body, { new: true })
 res.status(200).json(updatedTask)
 });
