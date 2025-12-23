@@ -1,7 +1,8 @@
 import asyncHandler from 'express-async-handler';
-import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 import User from '../connect/models/userModel.js';
+import { generateJWTtoken } from "../utils/generateTokens.js";
+
 
 const registerUser = asyncHandler(async (req, res) => {
   const { name, email, password } = req.body;
@@ -22,13 +23,17 @@ const registerUser = asyncHandler(async (req, res) => {
     password: hashedPassword,
   });
 
+
+
   if (user) {
     res.status(201).json({
+      accessToken,
       _id: user.id,
       name: user.name,
       email: user.email,
       password: user.password,
-      token: generateJWTtoken(user._id),
+      token:generateJWTtoken(user._id)
+     
     });
   } else {
     res.status(400);
@@ -44,7 +49,7 @@ const loginUser = asyncHandler(async (req, res) => {
       _id: user.id,
       name: user.name,
       email: user.email,
-      token: generateJWTtoken(user._id),
+       token:generateJWTtoken(user._id)
     });
   } else {
     res.status(400);
@@ -54,11 +59,10 @@ const loginUser = asyncHandler(async (req, res) => {
 
 //get user
 const getCurrentUser = asyncHandler(async (req, res) => {
-  res.json({ message: 'Get Current User successful' });
+ const{_id,name,email} = await User.findById(req.user.id)
+ res.status(200).json({id:_id,name,email});
 });
 
-const generateJWTtoken = (id) => {
-  jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: '5d' });
-};
+
 
 export { registerUser, loginUser, getCurrentUser };
